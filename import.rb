@@ -20,7 +20,7 @@ class Import
   #
   # Returns a Hashie
   def self.twitter(user)
-    Twitter.user_timeline("#{user}", :count => 2, :include_rts => true, :include_entities => true) 
+    Twitter.user_timeline("#{user}", :count => 200, :include_rts => true, :include_entities => true) 
   end
 
   # Making an API call using Faraday and parsing the result with Yajl

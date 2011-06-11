@@ -7,9 +7,9 @@ class Save
     tweets.each do |t|
       tweet = Raw.new(
         :source => 'twitter',
-        :user => t.name,
+        :user => t.user.name,
         :date => t.created_at,
-        :link => '',
+        :link => "http://twitter.com/#!/#{t.user.name}/status/#{t.id_str}",
         :content => t.text
       )
       t.entities.hashtags.each do |h| 
