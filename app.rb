@@ -1,12 +1,18 @@
 require 'rubygems'
 require 'sinatra'
-require 'haml'
+require 'slim'
 
 require './db.rb'
-  
-get '/' do
-  @tweet = Raw.first
-  haml :index
+
+ 
+get '/raw' do
+  @tweets = Raw.sort(:date.desc)
+  slim :raw
+end
+
+get '/channels' do
+  @channels = Channel.all
+  slim :channels
 end
 
 

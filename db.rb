@@ -4,45 +4,30 @@ require 'mongo_mapper'
 
 MongoMapper.database = "nl-1"
 
-# Document holding raw import data
-# -
+# Top level Mongo document holding raw import data
+#
+# source - twitter, tumblr, delicious, ....
+# user - @metaman, @shopledge, csbartus, ....
+# date - when the item was created
+# link - the url of the item
+# item - the content, the valuable information of this item
+# tags - tags associated of this item
+# refs - references to other items 
 class Raw
   include MongoMapper::Document
   
-  # Database Schema
-  # ----  
-  # twitter, tumblr, delicious, ...
   key :source, String
-    
-  # @metamn, #shopledge, csbartus, ...
   key :user, String
-  
-  # when the item was created
   key :date, Time
-  
-  # the url of the original item
-  # - http://twitter.com/themattharris/statuses/18498353208
   key :link, String
-  
-  # the content, the valuable information of this item
-  # - the tweet
-  # - the post on Tumblr
-  # - the link on Delicious
   key :content, String
   
-  # tags are EmbeddedDocuments for speed
-  # there will be another separated Document called Channels, built from these tags
   many :tags
-  
-  # to store where this information comes from
-  # - @dhh, @shopify, eigenstil/tumblr etc.
-  # like tags, this is EmbeddedDocument now but later separated into a standalone Sources Document
-  many :sources
+  many :refs
 end
 
 
-# Embedded Document for Tags
-# -
+# Embedded Mongo document for Tags / Raw
 class Tag
   include MongoMapper::EmbeddedDocument
   
@@ -50,11 +35,27 @@ class Tag
 end
 
 
-# Embedded Document for Sources
-# -
-class Source
+# Embedded Mongo document for Sources (mentions) / Raw
+class Ref
   include MongoMapper::EmbeddedDocument
   
   key :name, String
 end
+
+
+# Top level Mongo document for storing Channels
+# Used to convert Raw data into Channels 
+#
+# name - the channel name, the tag name
+# raws - each channel has many raw items associated (many-to-many relationship with Raw)
+class Channel
+  include MongoMapper::Document
+  
+  key :name, String
+  key :raw_ids, Array
+  many :raws, :in => :raw_ids  
+end
+
+
+
 
