@@ -1,5 +1,9 @@
-- @channels.each do |ch|
+- @channels.each do |channel|
   p
-    = ch.name
-    = ch.raws.size
-    
+    h4 = "#{channel.name} #{channel.count}"
+    ol
+    - channel.raws.each do |raw|
+      li = raw.content
+    p
+      Similar tags: 
+      = channel.similar.join(', ')

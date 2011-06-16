@@ -52,15 +52,32 @@ end
 # Top level Mongo document for storing Channels
 # Used to convert Raw data into Channels 
 #
-# name - the channel name, the tag name
+# name - the channel name (the tag name)
+# count - number of items in this channel
+# similar - other channel names mentioned together with the current channel
 # raws - each channel has many raw items associated (many-to-many relationship with Raw)
 class Channel
   include Mongoid::Document
   
   field :name, type: String
+  field :count, type: Integer
+  field :similar, type: Array
   has_and_belongs_to_many :raws
+  has_and_belongs_to_many :groups
 end
 
+
+# Top level Mongo document to group Channels
+# Used to create more complex channels
+#
+#
+class Group
+  include Mongoid::Document
+  
+  field :name, type: String
+  field :similar, type: Array
+  has_and_belongs_to_many :channels
+end
 
 
 

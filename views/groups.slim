@@ -1,0 +1,10 @@
+- @groups.each do |group|
+  h3 = group.name 
+  p = group.channels.map {|channel| channel.name}.join(', ')
+  ol
+    - group.channels.each do |channel|
+      - channel.raws.each do |raw|
+        li = raw.content
+  p
+    Similar tags: 
+    = group.similar.join(', ') unless group.similar.blank?
