@@ -1,8 +1,11 @@
 require 'rubygems'
-require 'mongo_mapper'
+require 'mongoid'
 
 
-MongoMapper.database = "nl-1"
+Mongoid.configure do |config|
+  config.master = Mongo::Connection.new.db("nl-2")
+end
+
 
 # Top level Mongo document holding raw import data
 #
@@ -14,32 +17,35 @@ MongoMapper.database = "nl-1"
 # tags - tags associated of this item
 # refs - references to other items 
 class Raw
-  include MongoMapper::Document
+  include Mongoid::Document
   
-  key :source, String
-  key :user, String
-  key :date, Time
-  key :link, String
-  key :content, String
+  field :source, type: String
+  field :user, type: String
+  field :date, type: Date
+  field :link, type: String
+  field :content, type: String
   
-  many :tags
-  many :refs
+  embeds_many :tags
+  embeds_many :refs
+  has_and_belongs_to_many :channels
 end
 
 
 # Embedded Mongo document for Tags / Raw
 class Tag
-  include MongoMapper::EmbeddedDocument
+  include Mongoid::Document
   
-  key :name, String
+  field :name, type: String
+  embedded_in :raw
 end
 
 
 # Embedded Mongo document for Sources (mentions) / Raw
 class Ref
-  include MongoMapper::EmbeddedDocument
+  include Mongoid::Document
   
-  key :name, String
+  field :name, type: String
+  embedded_in :raw
 end
 
 
@@ -49,11 +55,10 @@ end
 # name - the channel name, the tag name
 # raws - each channel has many raw items associated (many-to-many relationship with Raw)
 class Channel
-  include MongoMapper::Document
+  include Mongoid::Document
   
-  key :name, String
-  key :raw_ids, Array
-  many :raws, :in => :raw_ids  
+  field :name, type: String
+  has_and_belongs_to_many :raws
 end
 
 

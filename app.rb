@@ -6,7 +6,7 @@ require './db.rb'
 
  
 get '/raw' do
-  @tweets = Raw.sort(:date.desc)
+  @tweets = Raw.all
   slim :raw
 end
 
