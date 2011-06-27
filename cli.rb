@@ -12,5 +12,8 @@ require './save.rb'
 #r.map {|t| puts t.content}
 
 
-tumblr = Import.tumblr 'metaman'
-tumblr.children.map {|node| puts node.attributes['url-with-slug'].value }
+tumblr = Import.tumblr 'metaman', 'text'
+tumblr.each do |t|
+  puts t['id']
+end
+
