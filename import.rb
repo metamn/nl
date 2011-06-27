@@ -1,7 +1,8 @@
 require 'rubygems'
 require 'twitter'
 require 'tumblr'
-require 'faraday'
+#require 'faraday'
+require 'faraday_stack'
 require 'yajl'
 
 
@@ -23,23 +24,9 @@ class Import
     Twitter.user_timeline("#{user}", :count => 200, :include_rts => true, :include_entities => true) 
   end
 
-  # Making an API call using Faraday and parsing the result with Yajl
-  #
-  # url   - The API address
-  # query - The API query
-  #
-  # Returns a Hash
-  def self.api(url, query)
-    conn = Faraday.new(:url => "#{url}") do |builder|
-      builder.request  :url_encoded
-      builder.request  :json
-      builder.response :logger
-      builder.adapter  :net_http
-    end
-    
-    p = conn.get "#{query}.js"
-    parser = Yajl::Parser.new
-    j = parser.parse(p.body)
+  def self.tumblr(user)
+    raw = FaradayStack.get 'http://metaman.tumblr.com/api/read'
+    posts = raw.body.at('posts')
   end    
 end
   
